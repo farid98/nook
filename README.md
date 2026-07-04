@@ -23,8 +23,6 @@ You can change system prompt, context window, model temperature and more from se
 - **Spoken replies** — either your browser's built-in TTS, or a natural local
   neural voice via [Kokoro](https://github.com/thewh1teagle/kokoro-onnx)
 - **Vision support** — attach images to models that support them
-- **Document upload** — drop in a PDF, `.txt`, or `.md` file and ask questions
-  about it
 - **Web search & fetch tools** — let the model search the web and read pages
   when it needs current information (requires an Ollama account, see
   [Configuration](#configuration))
