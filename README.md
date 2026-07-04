@@ -36,6 +36,8 @@ You can change system prompt, context window, model temperature and more from se
 - **Settings panel** for model choice, system prompt, sampling parameters,
   context window, and TTS engine — all editable from the UI, no restart
   required
+- **Auto-detected model list** — the model dropdown is populated straight
+  from `ollama list`, so any model you've pulled shows up automatically
 - Light/dark theme
 
 ## Prerequisites
