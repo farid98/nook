@@ -103,20 +103,37 @@ def save_settings(data: dict) -> None:
         json.dump(data, f, indent=2)
 
 
-def pick_available_model(preferred: str) -> str:
+NO_MODELS_MESSAGE = "Ollama is running, but no models are pulled yet. Run `ollama pull <model-name>` (e.g. `ollama pull gemma4:12b`), then refresh."
+
+
+def ollama_models() -> tuple[list[str], str | None]:
+    """Returns (installed model names, error message) — error is None when Ollama answered."""
+    try:
+        return sorted(model.model for model in ollama.list().models), None
+    except Exception as e:
+        return [], str(e)
+
+
+def pick_available_model(preferred: str, available: list[str] | None = None, error: str | None = None) -> str:
     # Falls back to whatever's actually installed if the configured model
     # was never pulled (e.g. a fresh clone using the hardcoded default).
-    try:
-        available = sorted(model.model for model in ollama.list().models)
-    except Exception:
-        return preferred
-    return preferred if not available or preferred in available else available[0]
+    if available is None:
+        available, error = ollama_models()
+    return preferred if error or not available or preferred in available else available[0]
 
 
 app = Flask(__name__)
 
 settings = load_settings()
-settings["model_name"] = pick_available_model(settings["model_name"])
+
+_startup_models, _startup_error = ollama_models()
+settings["model_name"] = pick_available_model(settings["model_name"], _startup_models, _startup_error)
+
+if _startup_error:
+    print(f"⚠️  {_startup_error}")
+elif not _startup_models:
+    print(f"⚠️  {NO_MODELS_MESSAGE}")
+
 messages = []
 web_search_enabled = False
 context_tokens = 0
@@ -186,15 +203,21 @@ def get_context():
 
 @app.route("/api/models", methods=["GET"])
 def list_models():
-    response = ollama.list()
-    names = sorted(model.model for model in response.models)
+    names, error = ollama_models()
+    if error:
+        return {"models": [], "error": error}, 503
+    if not names:
+        return {"models": [], "error": NO_MODELS_MESSAGE}
     return {"models": names}
 
 
 @app.route("/api/models/vision", methods=["GET"])
 def model_vision():
     model_name = request.args.get("model", settings["model_name"])
-    info = ollama.show(model_name)
+    try:
+        info = ollama.show(model_name)
+    except Exception as e:
+        return {"vision": False, "error": str(e)}, 503
     return {"vision": "vision" in (info.capabilities or [])}
 
 

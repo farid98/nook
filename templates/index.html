@@ -12,7 +12,7 @@
 <body>
   <div id="app">
     <header>
-      <h1>Nook</h1>
+      <h1><a href="https://github.com/farid98/nook" target="_blank" rel="noopener noreferrer" title="View on GitHub">Nook</a></h1>
       <span class="model-name" id="model-name">{{ model_name }}</span>
       <span class="context-info" id="context-info" title="Context tokens used / context window size"></span>
       <label class="web-search-toggle" title="Let the model search the web and fetch pages">
@@ -23,6 +23,7 @@
       <button id="settings-btn" type="button" title="Settings">Settings</button>
       <button id="reset-btn" type="button">Reset</button>
     </header>
+    <div id="ollama-banner" class="ollama-banner" role="alert" hidden></div>
     <main id="messages"></main>
     <div id="attachment-previews"></div>
     <form id="chat-form">

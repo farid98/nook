@@ -22,9 +22,15 @@ themeToggle.addEventListener('click', () => {
 let isStreaming = false;
 let currentController = null;
 const contextInfoEl = document.getElementById('context-info');
+const ollamaBanner = document.getElementById('ollama-banner');
 
 function updateContextInfo(tokens, limit) {
   contextInfoEl.textContent = `${tokens.toLocaleString()} / ${limit.toLocaleString()} ctx`;
+}
+
+function updateOllamaBanner(error) {
+  ollamaBanner.textContent = error ? `⚠️ ${error}` : '';
+  ollamaBanner.hidden = !error;
 }
 
 fetch('/api/context')
@@ -108,7 +114,8 @@ function updateRangeLabels() {
 
 async function populateModelOptions(selected) {
   const response = await fetch('/api/models');
-  let { models } = await response.json();
+  let { models, error } = await response.json();
+  updateOllamaBanner(error);
 
   if (selected && !models.includes(selected)) models = [selected, ...models];
 
@@ -555,9 +562,11 @@ async function warnIfNoVision() {
   const { model_name } = await settingsResponse.json();
 
   const visionResponse = await fetch(`/api/models/vision?model=${encodeURIComponent(model_name)}`);
-  const { vision } = await visionResponse.json();
+  const { vision, error } = await visionResponse.json();
 
-  if (!vision) {
+  if (error) {
+    alert(`Could not check "${model_name}" for image support: ${error}`);
+  } else if (!vision) {
     alert(`"${model_name}" doesn't support image input. Pick a vision-capable model in Settings (e.g. gemma4:26b, gemma4:12b, gemma4:e4b).`);
   }
 }
@@ -599,3 +608,7 @@ attachInput.addEventListener('change', () => {
   }
   attachInput.value = '';
 });
+
+// Surface "Ollama not running" / "no models pulled" as a banner right away,
+// instead of only after the user opens Settings or sends a message.
+populateModelOptions(modelNameEl.textContent);
