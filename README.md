@@ -22,6 +22,10 @@ search.
 - **Web search & fetch tools** — let the model search the web and read pages
   when it needs current information (requires an Ollama account, see
   [Configuration](#configuration))
+- **Performance & context stats** — each reply shows generation speed
+  (tokens/sec) and token count, and the header tracks how much of the
+  model's context window has been used so far (e.g. `1,603 / 8,192 ctx`),
+  with a warning if a reply gets cut off from hitting the max output tokens
 - **Mermaid diagram rendering** and full Markdown formatting in responses
 - **Settings panel** for model choice, system prompt, sampling parameters,
   context window, and TTS engine — all editable from the UI, no restart
