@@ -43,7 +43,7 @@ You can change system prompt, context window, model temperature and more from se
 - [Ollama](https://ollama.com/download) installed and running, with at least
   one model pulled, e.g.:
   ```bash
-  ollama pull gemma3:12b
+  ollama pull gemma4:12b
   ```
 - Python 3.12+
 - [uv](https://docs.astral.sh/uv/) for dependency management
@@ -74,8 +74,10 @@ in Settings, a ~170MB TTS model. Both are cached under `~/.cache` afterward.
 Settings can be changed live from the ⚙️ Settings panel in the UI — model,
 system prompt, temperature/top-p/top-k/repeat penalty, context window, max
 output tokens, and TTS engine. These persist to `config.json`, which is
-created automatically with sane defaults on first save (see
-`config.example.json` for the shape).
+created the first time you hit Save (see `config.example.json` for the
+shape — it's just a reference, not read by the app). Until then, Nook runs
+on built-in defaults, and if the default model isn't one you've pulled, it
+automatically falls back to the first model `ollama list` returns.
 
 `.env` holds `OLLAMA_API_KEY`, which is **only** needed if you want to use
 Ollama's hosted cloud models or the built-in web search/fetch tools — a

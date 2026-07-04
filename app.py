@@ -79,8 +79,8 @@ def web_tool_instructions() -> str:
 
 
 DEFAULT_SETTINGS = {
-    "model_name": "gemma4:26b-mlx",
-    "system_prompt": "You are a highly intelligent assistant. But alwways speak in the style of james bond",
+    "model_name": "gemma4:12b",
+    "system_prompt": "You are a helpful assistant.",
     "temperature": 0.7,
     "top_p": 0.9,
     "top_k": 40,
@@ -103,9 +103,20 @@ def save_settings(data: dict) -> None:
         json.dump(data, f, indent=2)
 
 
+def pick_available_model(preferred: str) -> str:
+    # Falls back to whatever's actually installed if the configured model
+    # was never pulled (e.g. a fresh clone using the hardcoded default).
+    try:
+        available = sorted(model.model for model in ollama.list().models)
+    except Exception:
+        return preferred
+    return preferred if not available or preferred in available else available[0]
+
+
 app = Flask(__name__)
 
 settings = load_settings()
+settings["model_name"] = pick_available_model(settings["model_name"])
 messages = []
 web_search_enabled = False
 context_tokens = 0
@@ -161,6 +172,7 @@ def update_settings():
 def reset_settings():
     settings.clear()
     settings.update(DEFAULT_SETTINGS)
+    settings["model_name"] = pick_available_model(settings["model_name"])
     save_settings(settings)
     reset_messages()
 
