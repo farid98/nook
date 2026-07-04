@@ -1,0 +1,11 @@
+{
+  "model_name": "gemma3:12b",
+  "system_prompt": "You are a helpful assistant.",
+  "temperature": 0.7,
+  "top_p": 0.9,
+  "top_k": 40,
+  "repeat_penalty": 1.1,
+  "num_ctx": 8192,
+  "num_predict": 2048,
+  "tts_engine": "browser"
+}
