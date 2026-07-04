@@ -6,7 +6,13 @@ understanding — with no data leaving your computer unless you turn on web
 search.
 
 ![Nook screenshot](docs/screenshot.png)
-<!-- Replace the image above with an actual screenshot or GIF of the app before publishing. -->
+
+## Why
+If you run local models via Ollama, you can chat with the models via the Ollama GUI or the CLI, but neither renders markdown properly or tells you token speed and usage - so this is mainly for my own use to make life easier.
+
+If you're using something like Gemma4, it has tools - like web search - but you have to set it up. In Nook you can just check the Web search box and it will use a web search if it needs some updated info.
+
+You can change system prompt, context window, model temperature and more from settings.
 
 ## Features
 
